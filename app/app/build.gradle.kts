@@ -60,4 +60,7 @@ dependencies {
     implementation (libs.play.services.tflite.java)
     // Optional: include LiteRT Support Library
     implementation (libs.play.services.tflite.support)
+    // OPS
+    implementation (libs.tensorflow.lite.select.tf.ops.v2130)
+
 }

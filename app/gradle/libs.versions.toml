@@ -10,6 +10,9 @@ activityCompose = "1.10.0"
 composeBom = "2024.04.01"
 playServicesTfliteJava = "16.4.0"
 playServicesTfliteSupport = "16.4.0"
+tensorflowLiteSelectTfOps = "0.1.100"
+tensorflowLiteSelectTfOpsVersion = "2.13.0"
+tensorflowLiteVersion = "0.1.100"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,6 +31,9 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 play-services-tflite-java = { module = "com.google.android.gms:play-services-tflite-java", version.ref = "playServicesTfliteJava" }
 play-services-tflite-support = { module = "com.google.android.gms:play-services-tflite-support", version.ref = "playServicesTfliteSupport" }
+tensorflow-lite-select-tf-ops = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOps" }
+tensorflow-lite-select-tf-ops-v2130 = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOpsVersion" }
+tensorflow-tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLiteVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
