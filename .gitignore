@@ -28,6 +28,8 @@ render.experimental.xml
 
 # Google Services (e.g. APIs or Firebase)
 google-services.json
-
+S
 # Android Profiling
 *.hprof
+/local.properties
+.DS_Store
