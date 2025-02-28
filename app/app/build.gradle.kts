@@ -56,4 +56,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // LiteRT dependencies for Google Play services
+    implementation (libs.play.services.tflite.java)
+    // Optional: include LiteRT Support Library
+    implementation (libs.play.services.tflite.support)
 }
