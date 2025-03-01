@@ -15,6 +15,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        ndk {
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a"))
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -56,11 +60,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // LiteRT dependencies for Google Play services
-    implementation (libs.play.services.tflite.java)
-    // Optional: include LiteRT Support Library
-    implementation (libs.play.services.tflite.support)
-    // OPS
-    implementation (libs.tensorflow.lite.select.tf.ops.v2130)
-
+    implementation (libs.tensorflow.lite.v240)
+    implementation (libs.tensorflow.lite.select.tf.ops.v240)
+    implementation(libs.x.github.com.subtitle.synchronizer.jlibrosa)
 }

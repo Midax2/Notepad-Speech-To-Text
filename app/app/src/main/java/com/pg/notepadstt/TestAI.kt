@@ -1,58 +1,85 @@
 package com.pg.notepadstt
 
+import android.content.Context
 import android.util.Log
-import androidx.activity.ComponentActivity
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tflite.java.TfLite
-import org.tensorflow.lite.InterpreterApi
+import org.tensorflow.lite.Interpreter
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.FileInputStream
+import java.io.InputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.IntBuffer
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
-class TestAI : ComponentActivity() {
+class SpeechToTextProcessor(private val context: Context) {
+    private lateinit var interpreter: Interpreter
 
-    private lateinit var interpreter: InterpreterApi
-    private lateinit var executorService: ExecutorService
-
-    fun run() {
-        executorService = Executors.newSingleThreadExecutor()
-
-        val initializeTask: Task<Void> = TfLite.initialize(this)
-        initializeTask.addOnSuccessListener {
-            executorService.execute {
-                try {
-                    val modelBuffer = loadModelFile("STT.tflite")
-                    val interpreterOption =
-                        InterpreterApi.Options().setRuntime(InterpreterApi.Options.TfLiteRuntime.FROM_SYSTEM_ONLY)
-                    interpreter = InterpreterApi.create(modelBuffer, interpreterOption)
-                    // Run the model after initialization
-                    val input = FloatArray(1) { 1.0f } // Placeholder input
-                    val output = FloatArray(1)
-                    interpreter.run(input, output)
-                    Log.d("Interpreter", "Model executed successfully: ${output[0]}")
-                } catch (e: Exception) {
-                    Log.e("Interpreter", "Error during model execution", e)
-                }
-            }
-        }.addOnFailureListener { e ->
-            Log.e("Interpreter", "Cannot initialize interpreter", e)
+    // Load TensorFlow Lite model from assets
+    fun loadModel(modelFileName: String) {
+        try {
+            val modelBuffer = loadModelFile(modelFileName)
+            val options = Interpreter.Options()
+            interpreter = Interpreter(modelBuffer, options)
+        } catch (e: Exception) {
+            Log.e("SpeechToText", "Error loading model", e)
         }
     }
 
-    private fun loadModelFile(modelFileName: String): MappedByteBuffer {
-        val fileDescriptor = assets.openFd(modelFileName)
+    // Load and process WAV file from assets
+    private fun loadAudioFromAssets(fileName: String): FloatArray {
+        val inputStream: InputStream = context.assets.open(fileName)
+        val byteArray = inputStream.readBytes()
+
+        // Skip WAV header (first 44 bytes) and convert PCM data to FloatArray
+        val audioData = byteArray.sliceArray(44 until byteArray.size)
+        val floatArray = FloatArray(audioData.size / 2) // 16-bit PCM, 2 bytes per sample
+
+        for (i in floatArray.indices) {
+            val low = audioData[i * 2].toInt() and 0xFF
+            val high = audioData[i * 2 + 1].toInt() shl 8
+            val sample = high or low
+            floatArray[i] = sample / 32768.0f // Normalize to [-1, 1] like Librosa
+        }
+
+        return floatArray
+    }
+
+    // Run inference
+    fun runInference(audioFileName: String) {
+        val signal = loadAudioFromAssets(audioFileName)
+
+        val inputArray = arrayOf<Any>(signal)
+        val outputBuffer = IntBuffer.allocate(2000)
+
+        val outputMap = mutableMapOf<Int, Any>()
+        outputMap[0] = outputBuffer
+
+        // Resize input tensor if needed
+        interpreter.resizeInput(0, intArrayOf(signal.size))
+        interpreter.runForMultipleInputsOutputs(inputArray, outputMap)
+        val outputSize = interpreter.getOutputTensor(0).shape()[0]
+        val outputArray = IntArray(outputSize)
+        outputBuffer.rewind()
+        outputBuffer.get(outputArray)
+
+        val finalResult = StringBuilder()
+        for (i in 0 until outputSize) {
+            if (outputArray[i] != 0) {
+                finalResult.append(outputArray[i].toChar())
+            }
+        }
+
+        Log.d("SpeechToText", "Decoded Output: $finalResult")
+    }
+
+    private fun loadModelFile(modelName: String): MappedByteBuffer {
+        val fileDescriptor = context.assets.openFd(modelName)
         val inputStream = FileInputStream(fileDescriptor.fileDescriptor)
         val fileChannel = inputStream.channel
-        return fileChannel.map(FileChannel.MapMode.READ_ONLY, fileDescriptor.startOffset, fileDescriptor.declaredLength)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        executorService.shutdown()
-        if (::interpreter.isInitialized) {
-            interpreter.close()
-        }
+        val startOffset = fileDescriptor.startOffset
+        val declaredLength = fileDescriptor.declaredLength
+        return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
     }
 }

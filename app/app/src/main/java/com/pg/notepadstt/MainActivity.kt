@@ -1,6 +1,7 @@
 package com.pg.notepadstt
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -12,8 +13,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pg.notepadstt.ui.theme.NotepadSTTTheme
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var processor: SpeechToTextProcessor
+    private lateinit var executorService: ExecutorService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,6 +34,14 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
+        }
+        executorService = Executors.newSingleThreadExecutor()
+
+        executorService.execute {
+            processor = SpeechToTextProcessor(this)
+            processor.loadModel("conformer.tflite") // Load TFLite model from assets
+
+            processor.runInference("harvard.wav") // Process audio from assets
         }
     }
 }

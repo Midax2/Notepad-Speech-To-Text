@@ -1,5 +1,6 @@
 [versions]
-agp = "8.8.1"
+agp = "8.8.2"
+jlibrosa = "1.0.2"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -10,12 +11,17 @@ activityCompose = "1.10.0"
 composeBom = "2024.04.01"
 playServicesTfliteJava = "16.4.0"
 playServicesTfliteSupport = "16.4.0"
+tensorflowLite = "0.0.0-nightly-SNAPSHOT"
 tensorflowLiteSelectTfOps = "0.1.100"
 tensorflowLiteSelectTfOpsVersion = "2.13.0"
 tensorflowLiteVersion = "0.1.100"
+tensorflowTensorflowLite = "2.12.0"
+tensorflowTensorflowLiteSelectTfOps = "2.4.0"
+tensorflowTensorflowLiteVersion = "2.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+jlibrosa = { module = "com.github.psambit9791:jlibrosa", version.ref = "jlibrosa" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -33,7 +39,12 @@ play-services-tflite-java = { module = "com.google.android.gms:play-services-tfl
 play-services-tflite-support = { module = "com.google.android.gms:play-services-tflite-support", version.ref = "playServicesTfliteSupport" }
 tensorflow-lite-select-tf-ops = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOps" }
 tensorflow-lite-select-tf-ops-v2130 = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOpsVersion" }
+tensorflow-lite-select-tf-ops-v240 = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowTensorflowLiteSelectTfOps" }
+tensorflow-lite-v000nightlysnapshot = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
+tensorflow-lite-v2120 = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowTensorflowLite" }
+tensorflow-lite-v240 = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowTensorflowLiteVersion" }
 tensorflow-tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLiteVersion" }
+x_github-com_subtitle-synchronizer_jlibrosa = { module = "https://github.com/Subtitle-Synchronizer/jlibrosa" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
