@@ -3,15 +3,17 @@ package com.pg.notepadstt
 import android.content.Context
 import android.util.Log
 import org.tensorflow.lite.Interpreter
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 import java.nio.IntBuffer
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
+import com.jlibrosa.audio.JLibrosa;
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 
 class SpeechToTextProcessor(private val context: Context) {
     private lateinit var interpreter: Interpreter
@@ -48,31 +50,59 @@ class SpeechToTextProcessor(private val context: Context) {
 
     // Run inference
     fun runInference(audioFileName: String) {
-        val signal = loadAudioFromAssets(audioFileName)
+        val jLibrosa = JLibrosa()
+        val signal = jLibrosa.loadAndRead(copyWavFileToCache(audioFileName), 16000, -1);
 
         val inputArray = arrayOf<Any>(signal)
-        val outputBuffer = IntBuffer.allocate(2000)
+        val outputBuffer = IntBuffer.allocate(50000)
 
         val outputMap = mutableMapOf<Int, Any>()
         outputMap[0] = outputBuffer
 
         // Resize input tensor if needed
-        interpreter.resizeInput(0, intArrayOf(signal.size))
-        interpreter.runForMultipleInputsOutputs(inputArray, outputMap)
-        val outputSize = interpreter.getOutputTensor(0).shape()[0]
-        val outputArray = IntArray(outputSize)
-        outputBuffer.rewind()
-        outputBuffer.get(outputArray)
+        try {
+            interpreter.resizeInput(0, intArrayOf(signal.size))
+            interpreter.allocateTensors()
+            interpreter.runForMultipleInputsOutputs(inputArray, outputMap)
+            val outputSize = interpreter.getOutputTensor(0).shape()[0]
+            val outputArray = IntArray(outputSize)
+            outputBuffer.rewind()
+            outputBuffer.get(outputArray)
 
-        val finalResult = StringBuilder()
-        for (i in 0 until outputSize) {
-            if (outputArray[i] != 0) {
-                finalResult.append(outputArray[i].toChar())
+            val finalResult = StringBuilder()
+            for (i in 0 until outputSize) {
+                if (outputArray[i] != 0) {
+                    finalResult.append(outputArray[i].toChar())
+                }
+            }
+
+            Log.d("SpeechToText", "Decoded Output: $finalResult")
+            interpreter.close()
+        } catch (e: Exception) {
+            Log.e("SpeechToText", "Error running inference", e)
+            return
+        }
+    }
+
+    private fun copyWavFileToCache(wavFilename: String): String {
+        val destinationFile = File(context.cacheDir, wavFilename)
+        if (!destinationFile.exists()) {
+            try {
+                context.assets.open(wavFilename).use { inputStream ->
+                    val buffer = ByteArray(inputStream.available())
+                    inputStream.read(buffer)
+
+                    FileOutputStream(destinationFile).use { fileOutputStream ->
+                        fileOutputStream.write(buffer)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("SpeechToText", e.message ?: "Error copying WAV file to cache")
             }
         }
-
-        Log.d("SpeechToText", "Decoded Output: $finalResult")
+        return destinationFile.absolutePath
     }
+
 
     private fun loadModelFile(modelName: String): MappedByteBuffer {
         val fileDescriptor = context.assets.openFd(modelName)
