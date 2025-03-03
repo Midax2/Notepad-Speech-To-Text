@@ -12,6 +12,8 @@ composeBom = "2024.04.01"
 playServicesTfliteJava = "16.4.0"
 playServicesTfliteSupport = "16.4.0"
 tensorflowLite = "0.0.0-nightly-SNAPSHOT"
+tensorflowLiteGpu = "2.10.0"
+tensorflowLiteGpuVersion = "2.4.0"
 tensorflowLiteSelectTfOps = "0.1.100"
 tensorflowLiteSelectTfOpsVersion = "2.13.0"
 tensorflowLiteVersion = "0.1.100"
@@ -37,6 +39,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 play-services-tflite-java = { module = "com.google.android.gms:play-services-tflite-java", version.ref = "playServicesTfliteJava" }
 play-services-tflite-support = { module = "com.google.android.gms:play-services-tflite-support", version.ref = "playServicesTfliteSupport" }
+tensorflow-lite-gpu = { module = "org.tensorflow:tensorflow-lite-gpu", version.ref = "tensorflowLiteGpu" }
+tensorflow-lite-gpu-v240 = { module = "org.tensorflow:tensorflow-lite-gpu", version.ref = "tensorflowLiteGpuVersion" }
 tensorflow-lite-select-tf-ops = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOps" }
 tensorflow-lite-select-tf-ops-v2130 = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowLiteSelectTfOpsVersion" }
 tensorflow-lite-select-tf-ops-v240 = { module = "org.tensorflow:tensorflow-lite-select-tf-ops", version.ref = "tensorflowTensorflowLiteSelectTfOps" }

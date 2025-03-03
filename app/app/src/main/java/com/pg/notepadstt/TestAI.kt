@@ -2,21 +2,18 @@ package com.pg.notepadstt
 
 import android.content.Context
 import android.util.Log
+import com.jlibrosa.audio.JLibrosa
 import org.tensorflow.lite.Interpreter
+import java.io.File
 import java.io.FileInputStream
-import java.io.InputStream
+import java.io.FileOutputStream
 import java.nio.IntBuffer
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
-import com.jlibrosa.audio.JLibrosa;
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
 
 class SpeechToTextProcessor(private val context: Context) {
     private lateinit var interpreter: Interpreter
+    private lateinit var jLibrosa: JLibrosa
 
     // Load TensorFlow Lite model from assets
     fun loadModel(modelFileName: String) {
@@ -29,28 +26,9 @@ class SpeechToTextProcessor(private val context: Context) {
         }
     }
 
-    // Load and process WAV file from assets
-    private fun loadAudioFromAssets(fileName: String): FloatArray {
-        val inputStream: InputStream = context.assets.open(fileName)
-        val byteArray = inputStream.readBytes()
-
-        // Skip WAV header (first 44 bytes) and convert PCM data to FloatArray
-        val audioData = byteArray.sliceArray(44 until byteArray.size)
-        val floatArray = FloatArray(audioData.size / 2) // 16-bit PCM, 2 bytes per sample
-
-        for (i in floatArray.indices) {
-            val low = audioData[i * 2].toInt() and 0xFF
-            val high = audioData[i * 2 + 1].toInt() shl 8
-            val sample = high or low
-            floatArray[i] = sample / 32768.0f // Normalize to [-1, 1] like Librosa
-        }
-
-        return floatArray
-    }
-
     // Run inference
     fun runInference(audioFileName: String) {
-        val jLibrosa = JLibrosa()
+        jLibrosa = JLibrosa()
         val signal = jLibrosa.loadAndRead(copyWavFileToCache(audioFileName), 16000, -1);
 
         val inputArray = arrayOf<Any>(signal)
@@ -59,7 +37,6 @@ class SpeechToTextProcessor(private val context: Context) {
         val outputMap = mutableMapOf<Int, Any>()
         outputMap[0] = outputBuffer
 
-        // Resize input tensor if needed
         try {
             interpreter.resizeInput(0, intArrayOf(signal.size))
             interpreter.allocateTensors()

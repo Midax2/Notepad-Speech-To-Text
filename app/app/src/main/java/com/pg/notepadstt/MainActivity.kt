@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
         // Launch the coroutine in IO context for background processing
         CoroutineScope(Dispatchers.IO).launch {
             processor = SpeechToTextProcessor(this@MainActivity)
-            processor.loadModel("STT.tflite") // Load TFLite model from assets
+            processor.loadModel("conformer.tflite") // Load TFLite model from assets
 
             processor.runInference("harvard.wav") // Process audio from assets
         }
