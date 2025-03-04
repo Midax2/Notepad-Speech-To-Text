@@ -3,10 +3,13 @@ package com.pg.notepadstt
 import android.content.Context
 import android.util.Log
 import com.jlibrosa.audio.JLibrosa
+import com.jlibrosa.audio.wavFile.WavFile
 import org.tensorflow.lite.Interpreter
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.nio.IntBuffer
 import java.nio.MappedByteBuffer
 import java.nio.channels.FileChannel
@@ -19,7 +22,7 @@ class SpeechToTextProcessor(private val context: Context) {
     fun loadModel(modelFileName: String) {
         try {
             val modelBuffer = loadModelFile(modelFileName)
-            val options = Interpreter.Options()
+            val options = Interpreter.Options().setNumThreads(4).setUseXNNPACK(true)
             interpreter = Interpreter(modelBuffer, options)
         } catch (e: Exception) {
             Log.e("SpeechToText", "Error loading model", e)
@@ -29,8 +32,7 @@ class SpeechToTextProcessor(private val context: Context) {
     // Run inference
     fun runInference(audioFileName: String) {
         jLibrosa = JLibrosa()
-        val signal = jLibrosa.loadAndRead(copyWavFileToCache(audioFileName), 16000, -1);
-
+        val signal = jLibrosa.loadAndRead(copyWavFileToCache(audioFileName), 16000, -1)
         val inputArray = arrayOf<Any>(signal)
         val outputBuffer = IntBuffer.allocate(50000)
 
