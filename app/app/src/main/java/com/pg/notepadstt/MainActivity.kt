@@ -1,7 +1,6 @@
 package com.pg.notepadstt
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,15 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.pg.notepadstt.ui.theme.NotepadSTTTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
-
-    private lateinit var processor: SpeechToTextProcessor
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,14 +26,6 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             }
-        }
-
-        // Launch the coroutine in IO context for background processing
-        CoroutineScope(Dispatchers.IO).launch {
-            processor = SpeechToTextProcessor(this@MainActivity)
-            processor.loadModel("conformer.tflite") // Load TFLite model from assets
-
-            processor.runInference("harvard.wav") // Process audio from assets
         }
     }
 }
