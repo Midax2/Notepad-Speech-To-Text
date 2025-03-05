@@ -8,12 +8,18 @@ android {
     namespace = "com.pg.notepadstt"
     compileSdk = 35
 
+
+
     defaultConfig {
         applicationId = "com.pg.notepadstt"
         minSdk = 30
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0"
+
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64") // Kotlin DSL uses += for lists
+        }
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +45,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -49,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(files("src/main/libs/jlibrosa-1.1.8-SNAPSHOT-jar-with-dependencies.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -56,11 +64,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // LiteRT dependencies for Google Play services
-    implementation (libs.play.services.tflite.java)
-    // Optional: include LiteRT Support Library
-    implementation (libs.play.services.tflite.support)
-    // OPS
-    implementation (libs.tensorflow.lite.select.tf.ops.v2130)
-
+    implementation (libs.tensorflow.lite.v2120)
+    implementation (libs.tensorflow.lite.select.tf.ops.v2120)
 }
