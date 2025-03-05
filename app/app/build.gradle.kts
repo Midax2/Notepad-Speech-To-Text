@@ -4,14 +4,6 @@ plugins {
     alias(libs.plugins.kotlin.compose)
 }
 
-allprojects {
-    configurations.all {
-        resolutionStrategy.dependencySubstitution {
-            substitute(module("org.hamcrest:hamcrest-core:1.1")).using(module("junit:junit:4.13.2"))
-        }
-    }
-}
-
 android {
     namespace = "com.pg.notepadstt"
     compileSdk = 35
@@ -23,7 +15,7 @@ android {
         minSdk = 30
         targetSdk = 35
         versionCode = 1
-        versionName = "1.0"
+        versionName = "2.0"
 
         ndk {
             abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64") // Kotlin DSL uses += for lists
@@ -65,7 +57,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(files("src/main/libs/jlibrosa-1.1.8-SNAPSHOT-jar-with-dependencies.jar"))
-    implementation(files("src/main/libs/jlibrosa-1.1.8-SNAPSHOT-javadoc.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
