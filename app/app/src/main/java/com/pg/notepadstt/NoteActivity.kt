@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.pg.notepadstt.screens.ButtonBar
+import com.pg.notepadstt.screens.EditableTextField
 import com.pg.notepadstt.ui.theme.NotepadSTTTheme
 
 class NoteActivity : ComponentActivity() {
@@ -44,6 +45,7 @@ fun NotePreview(modifier: Modifier=Modifier) {
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text("Title")
+            EditableTextField()
             Spacer(modifier = Modifier.weight(1f))
             ButtonBar()
         }
