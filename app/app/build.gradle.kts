@@ -66,4 +66,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation (libs.tensorflow.lite.v2120)
     implementation (libs.tensorflow.lite.select.tf.ops.v2120)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.svg)
 }
