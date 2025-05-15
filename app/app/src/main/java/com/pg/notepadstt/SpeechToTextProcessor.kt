@@ -84,6 +84,7 @@ class SpeechToTextProcessor(private val context: Context) {
      * @return The absolute path of the cached WAV file.
      */
     private fun copyWavFileToCache(wavFilename: String): String {
+        /*
         val destinationFile = File(context.cacheDir, wavFilename)
         if (!destinationFile.exists()) {
             try {
@@ -100,6 +101,16 @@ class SpeechToTextProcessor(private val context: Context) {
             }
         }
         return destinationFile.absolutePath
+
+         */
+        val wavFile = File(context.filesDir, wavFilename) // or use context.filesDir if you stored it there
+
+        return if (wavFile.exists()) {
+            wavFile.absolutePath
+        } else {
+            Log.e("SpeechToText", "WAV file not found: ${wavFile.absolutePath}")
+            ""
+        }
     }
 
     /**
