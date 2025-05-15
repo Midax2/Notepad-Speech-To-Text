@@ -16,12 +16,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.pg.notepadstt.AudioRecorder
 import com.pg.notepadstt.R
+import com.pg.notepadstt.SpeechToTextProcessor
 import com.pg.notepadstt.ui.theme.ButtonBarBackground
 
 
 @Composable
-fun ButtonBar(){
+fun ButtonBar(
+    sttProcessor: SpeechToTextProcessor,
+    recorder: AudioRecorder
+){
     Row(
         modifier = Modifier
             .fillMaxWidth()
