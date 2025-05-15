@@ -14,9 +14,9 @@
         tools:targetApi="31">
 
         <activity
-            android:name=".NoteActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/title_activity_note"
+            android:label="NotePadSTTHome"
             android:theme="@style/Theme.NotepadSTT" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".NoteActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.NotepadSTT">
