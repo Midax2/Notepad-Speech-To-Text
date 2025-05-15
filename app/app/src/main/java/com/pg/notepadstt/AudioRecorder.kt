@@ -8,6 +8,7 @@ import android.media.MediaRecorder
 import androidx.core.content.ContextCompat
 import android.Manifest
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.File
@@ -25,7 +26,7 @@ class AudioRecorder(private val context:Context) {
 
     private var audioRecord: AudioRecord? = null
     private var recordingThread: Thread? = null
-    private var isRecording = false
+    val isRecording = mutableStateOf(false)
 
 
     private val pcmFile: File by lazy {
@@ -57,10 +58,13 @@ class AudioRecorder(private val context:Context) {
             if (wavFile.exists()) wavFile.delete()
 
             audioRecord?.startRecording()
-            isRecording=true
+            isRecording.value=true
+            Log.i("AudioRecorder:","Start recording ")
             recordingThread = thread {
                 writePcmDataToFile()
+
             }
+
             return wavFile
         }
         catch (e: SecurityException){
@@ -71,7 +75,7 @@ class AudioRecorder(private val context:Context) {
     }
 
     fun stopRecording(): File {
-        isRecording = false
+        isRecording.value = false
         audioRecord?.apply {
             stop()
             release()
@@ -80,13 +84,14 @@ class AudioRecorder(private val context:Context) {
 
         convertPcmToWav(pcmFile, wavFile)
         pcmFile.delete() // Clean up
+        Log.i("AudioRecorder:","stop recording ${wavFile.exists()} ${wavFile.absolutePath}")
         return wavFile
     }
 
     private fun writePcmDataToFile() {
         val buffer = ByteArray(BUFFER_SIZE)
         FileOutputStream(pcmFile).use { os ->
-            while (isRecording) {
+            while (isRecording.value) {
                 val read = audioRecord?.read(buffer, 0, buffer.size) ?: 0
                 if (read > 0) {
                     os.write(buffer, 0, read)
@@ -131,4 +136,6 @@ class AudioRecorder(private val context:Context) {
         write(ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value.toShort()).array())
     }
 
+
+    fun getRecordState(): Boolean = isRecording.value
 }
