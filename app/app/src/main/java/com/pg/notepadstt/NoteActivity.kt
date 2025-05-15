@@ -32,18 +32,32 @@ import com.pg.notepadstt.screens.ButtonBar
 import com.pg.notepadstt.screens.EditableTextField
 import com.pg.notepadstt.ui.theme.NotepadSTTTheme
 import  android.Manifest
+import android.content.Intent
 import android.widget.Button
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import com.pg.notepadstt.ui.theme.ButtonBarBackground
+import com.pg.notepadstt.ui.theme.ButtonContentColor
 
 class NoteActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val intent = intent
+            val title = intent.getStringExtra("title") ?: ""
+            val content = intent.getStringExtra("content") ?: ""
             NotepadSTTTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {innerPading->
-                    NotePreview(modifier = Modifier.padding(innerPading))
+                    NotePreview(
+                        modifier = Modifier.padding(innerPading),
+                        initialTitle = title,
+                        initialContent = content
+                    )
                 }
             }
         }
@@ -54,13 +68,17 @@ class NoteActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun NotePreview(modifier: Modifier=Modifier) {
+fun NotePreview(
+    modifier: Modifier=Modifier,
+    initialTitle: String = "",
+    initialContent: String = ""
+) {
     val context= LocalContext.current
     val configuration= LocalConfiguration.current
     val screenHeight=configuration.screenHeightDp.dp
     val sttProcessor=SpeechToTextProcessor(context)
-    val title = remember { mutableStateOf("") }
-    val textState= remember { mutableStateOf("") }
+    val title = remember { mutableStateOf(initialTitle) }
+    val textState= remember { mutableStateOf(initialContent) }
     var hasPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -81,7 +99,21 @@ fun NotePreview(modifier: Modifier=Modifier) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier=Modifier.height(screenHeight*0.15f))
+            Spacer(modifier=Modifier.height(screenHeight*0.1f))
+            Button(
+                onClick = {
+                    val intent= Intent(context, MainActivity::class.java)
+                    context.startActivity(intent)
+                },
+                colors = ButtonDefaults.buttonColors(ButtonBarBackground)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = "HomePage",
+                    tint = ButtonContentColor
+                )
+            }
+            Spacer(modifier=Modifier.height(screenHeight*0.05f))
             if(!hasPermission){
                 Button(onClick= {
                     launcher.launch(Manifest.permission.RECORD_AUDIO)
