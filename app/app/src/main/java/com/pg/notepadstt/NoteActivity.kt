@@ -60,6 +60,7 @@ fun NotePreview(modifier: Modifier=Modifier) {
     val screenHeight=configuration.screenHeightDp.dp
     val sttProcessor=SpeechToTextProcessor(context)
     val title = remember { mutableStateOf("") }
+    val textState= remember { mutableStateOf("") }
     var hasPermission by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -100,9 +101,9 @@ fun NotePreview(modifier: Modifier=Modifier) {
                         .height(screenHeight * 0.05f), // Fixed height
                     singleLine = true
                 )
-                EditableTextField()
+                EditableTextField(textState)
                 Spacer(modifier = Modifier.weight(1f))
-                ButtonBar(sttProcessor, recorder)
+                ButtonBar(sttProcessor, recorder, textState,title,context)
             }
         }
     }

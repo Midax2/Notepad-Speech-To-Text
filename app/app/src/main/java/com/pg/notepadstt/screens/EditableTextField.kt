@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,10 +19,10 @@ import androidx.compose.ui.unit.sp
 import com.pg.notepadstt.ui.theme.TextFieldBackgroundColor
 
 @Composable
-fun EditableTextField(){
+fun EditableTextField(textState: MutableState<String>){
     val configuration= LocalConfiguration.current
     val screenHeight=configuration.screenHeightDp.dp
-    val textState = remember { mutableStateOf("") }
+    //val textState = remember { mutableStateOf("") }
     TextField(
         value=textState.value,
         onValueChange={value -> textState.value=value},
