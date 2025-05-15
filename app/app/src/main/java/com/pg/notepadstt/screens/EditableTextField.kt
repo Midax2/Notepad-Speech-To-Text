@@ -30,7 +30,7 @@ fun EditableTextField(){
         modifier = Modifier
             .fillMaxWidth()
             .background(TextFieldBackgroundColor)
-            .heightIn(min =screenHeight*0.1f, max=screenHeight*0.85f),
+            .heightIn(min =screenHeight*0.5f, max=screenHeight*0.7f),
         shape = RoundedCornerShape(9.0f)
 
 
