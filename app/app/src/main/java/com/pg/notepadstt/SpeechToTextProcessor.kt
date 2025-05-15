@@ -48,11 +48,15 @@ class SpeechToTextProcessor(private val context: Context) {
      * @return The converted text.
      */
     fun runInference(audioFileName: String) : String {
+
         try {
             jLibrosa = JLibrosa()
             val signal = jLibrosa
                 .loadAndRead(copyWavFileToCache(audioFileName), SAMPLE_RATE, READ_DURATION)
             val inputArray = arrayOf<Any>(signal)
+            Log.d("STT", "Input signal size: ${signal.size}")
+            Log.d("STT", "Output buffer capacity: ${OUTPUT_BUFFER_CAPACITY}")
+            Log.d("STT", "Model input shape: ${interpreter.getInputTensor(0).shape().joinToString()}")
             val outputBuffer = IntBuffer.allocate(OUTPUT_BUFFER_CAPACITY)
 
             val outputMap = mutableMapOf<Int, Any>()
@@ -74,7 +78,9 @@ class SpeechToTextProcessor(private val context: Context) {
             }
             return finalResult.toString()
         } catch (e: Exception) {
-            throw Exception("Error running inference")
+            e.printStackTrace() // This will print the full exception to Logcat
+            Log.e("SpeechToText", "runInference error: ${e.message}", e)
+            throw Exception("Error running inference: ${e.message}")
         }
     }
 
