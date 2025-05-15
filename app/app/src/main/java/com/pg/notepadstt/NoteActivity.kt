@@ -38,6 +38,7 @@ class NoteActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun NotePreview(modifier: Modifier=Modifier) {
+    val title = remember { mutableStateOf("") }
     NotepadSTTTheme {
         Column(
             modifier = Modifier
