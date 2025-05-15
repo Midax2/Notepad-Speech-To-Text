@@ -73,7 +73,7 @@ fun NotePreview(modifier: Modifier=Modifier) {
     ) { granted ->
         hasPermission = granted
     }
-    sttProcessor.loadModel("STT.tflite")
+    //sttProcessor.loadModel("STT.tflite")
     NotepadSTTTheme {
         Column(
             modifier = Modifier
