@@ -50,9 +50,13 @@ fun ButtonBar(
                 if (recorder.isRecording.value) {
                     recorder.stopRecording()
                     textFromSpeech.value=sttProcessor.runInference("temp_audio.wav")
+                    sttProcessor.releaseInterpreter()
                     Log.i("Result Text from Speech:","Content:\" ${textFromSpeech.value}\"")
                 }
-                else recorder.startRecording()
+                else{
+                    sttProcessor.loadModel("STT.tflite")
+                    recorder.startRecording()
+                }
             },
             name = "Record"
         )
