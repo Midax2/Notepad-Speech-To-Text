@@ -36,6 +36,7 @@ import android.content.Intent
 import android.widget.Button
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ButtonDefaults
@@ -130,7 +131,9 @@ fun NotePreview(
                     placeholder = { Text("Title") },
                     modifier = Modifier
                         .fillMaxWidth()
+                        .defaultMinSize(minHeight = 50.dp)
                         .height(screenHeight * 0.05f), // Fixed height
+
                     singleLine = true
                 )
                 EditableTextField(textState)
