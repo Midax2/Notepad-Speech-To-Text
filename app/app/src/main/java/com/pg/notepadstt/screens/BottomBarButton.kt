@@ -1,5 +1,6 @@
 package com.pg.notepadstt.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.pg.notepadstt.R
@@ -28,6 +30,9 @@ fun BottomBarButton(
     onClickEvent: () -> Unit,
     name: String
 ) {
+    val configuration= LocalConfiguration.current
+    val screenWidth=configuration.screenWidthDp.dp
+    Log.d("BottomBarButton:","Width=${screenWidth}")
     Button(
         onClick = onClickEvent,
         colors = ButtonDefaults.buttonColors(ButtonBarBackground)
@@ -40,11 +45,15 @@ fun BottomBarButton(
             else if(iconInt!=null){
             Icon(painter = painterResource(id=iconInt)/*svgImageFromAssets(iconName.toString())*/,
                 contentDescription = name,
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(screenWidth*0.05f),
                 tint = ButtonContentColor)
         }
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(name, color = ButtonContentColor)
+
+        if(screenWidth>=410.dp) {
+            Spacer(modifier = Modifier.width(screenWidth * 0.01f))
+
+            Text(name, color = ButtonContentColor)
+        }
 
     }
 }
