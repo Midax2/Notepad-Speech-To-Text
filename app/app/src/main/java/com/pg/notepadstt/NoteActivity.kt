@@ -34,6 +34,7 @@ import com.pg.notepadstt.ui.theme.NotepadSTTTheme
 import  android.Manifest
 import android.content.Intent
 import android.widget.Button
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.defaultMinSize
@@ -93,6 +94,15 @@ fun NotePreview(
     ) { granted ->
         hasPermission = granted
     }
+    val recorder = remember { AudioRecorder(context) }
+    BackHandler {
+        if(recorder.isRecording.value) {
+            recorder.stopRecording()
+            sttProcessor.releaseInterpreter()
+        }
+        val intent= Intent(context, MainActivity::class.java)
+        context.startActivity(intent)
+    }
     //sttProcessor.loadModel("STT.tflite")
     NotepadSTTTheme {
         Column(
@@ -103,6 +113,10 @@ fun NotePreview(
             Spacer(modifier=Modifier.height(screenHeight*0.1f))
             Button(
                 onClick = {
+                    if(recorder.isRecording.value) {
+                        recorder.stopRecording()
+                        sttProcessor.releaseInterpreter()
+                    }
                     val intent= Intent(context, MainActivity::class.java)
                     context.startActivity(intent)
                 },
@@ -123,7 +137,7 @@ fun NotePreview(
                 }
 
             }else {
-                val recorder = remember { AudioRecorder(context) }
+
 
                 OutlinedTextField(
                     value = title.value,
